@@ -28,7 +28,7 @@
                 },
                 success: function(response) {
                     if (response == 'named') {
-                        $("#teamform").unbind().submit();
+                        $("#teamform").submit();
                     } else if (response == 'unnamed') {
                         document.getElementById("nameText").style.visibility = 'visible';
                         document.getElementById("teamName").style.visibility = 'visible';

@@ -27,8 +27,12 @@ app.get('/', (req, res) => {
     res.render('welcome');
 });
 
-app.get('/hunt', (req, res) => {
-    console.log(req);
+
+// route for scavenger hunt
+app.post('/hunt', (req, res) => {
+    var teamId = req.body.teamId;
+    var teamName = req.body.teamName;
+    res.render('hunt');
 });
 
 // API endpoint which validates the given teamId and checks if the team needs to be named
@@ -41,13 +45,31 @@ app.get('/api/validateteamid', (req, res) => {
                     res.send('unnamed');
                 else
                     res.send('named');
+            } else {
+                res.send('invalid');
             }
-            res.send('invalid');
         });
     } catch (error) {
-        res.send(error);
+        res.send('error');
     }
 });
+
+function getTeamName(teamId) {
+    try {
+        pool.query(`select team_name from curr_pos where team_id = '${teamId}'`, function(error, result, fields) {
+            if (result.rows.length != 0) {
+                if (result.rows[0]['team_name'] == null)
+                    return 0;
+                else
+                    return result.rows[0]['team_name'];
+            } else {
+                return -1;
+            }
+        });
+    } catch (error) {
+        res.send('error');
+    }
+}
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => {
