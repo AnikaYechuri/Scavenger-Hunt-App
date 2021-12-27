@@ -1,0 +1,23 @@
+{
+  "name": "scavenger-hunt-app",
+  "version": "1.0.0",
+  "description": "This web application is intended to facilitate a family scavenger hunt activity.",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AnikaYechuri/Scavenger-Hunt-App.git"
+  },
+  "author": "Anika & Saahil",
+  "license": "ISC",
+  "homepage": "https://github.com/AnikaYechuri/Scavenger-Hunt-App#readme",
+  "dependencies": {
+    "body-parser": "^1.19.1",
+    "cors": "^2.8.5",
+    "express": "^4.17.2",
+    "express-handlebars": "^6.0.2",
+    "pg": "^8.7.1"
+  }
+}
