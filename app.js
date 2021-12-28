@@ -26,10 +26,10 @@ app.use(express.static(`${__dirname}/public`));
 
 // constants
 const teamMembers = {
-    '6VVA':'',
-    'M3ZV':'',
-    'VOK1':'',
-    'LYRB':'',
+    '6VVA':'Akash, Narasimham, Akhila',
+    'M3ZV':'Anika, Shanti, Vihaa,',
+    'VOK1':'Venkat, Nithika, Saahas',
+    'LYRB':'Sunila, Aneesh, Rishik',
     'TEST':'player1, player2, player3'
 }
 
