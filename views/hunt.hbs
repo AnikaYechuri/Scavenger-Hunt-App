@@ -1,1 +1,35 @@
-Hi
+<!DOCTYPE html>
+<html>
+    <style>
+        #map {
+            height: 50%;
+        }
+        html, body {
+            height: 100%;
+            margin: 5%;
+        }
+    </style>
+    <script>
+        function initMap() {
+            map = new google.maps.Map(document.getElementById("map"), {
+                center: { lat: -34.397, lng: 150.644 },
+                zoom: 8,
+            });
+        }
+    </script>
+  <body>
+    <h3 id=teamNameText>Team</h3>
+    <h5 id=teamMembersText>Team Members</h5>
+    <div id="map"></div>
+    <h6 id=currClueText>Clue X:</h6>
+    <input type="text" id="answerText" name="teamId"> 
+    <input type="button" id="enterButton" value="Submit" class="button">
+    <p style="margin-bottom:0.5cm;"></p>
+    <p id=cluesCollectedText>Clues collected: A, B, C</p>
+    <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCbtbKtNrXH2I5SfFq2lQtqfJxxed4Ume0&callback=initMap&v=weekly&channel=2"
+      async
+    ></script>
+  </body>
+</html>

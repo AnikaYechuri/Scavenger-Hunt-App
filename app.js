@@ -32,6 +32,21 @@ const teamMembers = {
     'LYRB':'Sunila, Aneesh, Rishik',
     'TEST':'player1, player2, player3'
 }
+/*const clueCoords = {
+    'M1':
+    'A1':
+    'N':
+    'A2':
+    'K':
+    'U1':
+    'T':
+    'U2':
+    'M2':
+    'B':
+    'A':
+    'M':
+
+}*/
 
 // route for welcome page
 app.get('/', (req, res) => {
@@ -77,6 +92,20 @@ app.get('/api/validateteamid', (req, res) => {
         res.send('error');
     }
 });
+
+// API endpoint to retrieve team information
+app.get('/api/teaminfo', (req, res) => {
+    var teamId = req.query.teamId;
+    try {
+        pool.query(`select * from curr_pos where team_id = '${teamId}'`, function(error, result, fields) {
+            res.send(result.rows[0]);
+        });
+    } catch (error) {
+        res.send('error');
+    }
+});
+
+
 
 function nameTeam(teamId, teamName) {
     return new Promise(resolve => {
