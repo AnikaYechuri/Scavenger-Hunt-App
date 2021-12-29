@@ -6,14 +6,14 @@
         }
         html, body {
             height: 100%;
-            margin: 5%;
+            margin: 2%;
         }
     </style>
     <script>
         function initMap() {
             map = new google.maps.Map(document.getElementById("map"), {
-                center: { lat: -34.397, lng: 150.644 },
-                zoom: 8,
+                center: { lat: 47.605692, lng: -121.982297 },
+                zoom: 14.9,
             });
         }
     </script>
@@ -21,6 +21,7 @@
     <h3 id=teamNameText>Team</h3>
     <h5 id=teamMembersText>Team Members</h5>
     <div id="map"></div>
+    <p style="margin-bottom:0.5cm;"></p>
     <h6 id=currClueText>Clue X:</h6>
     <input type="text" id="answerText" name="teamId"> 
     <input type="button" id="enterButton" value="Submit" class="button">
