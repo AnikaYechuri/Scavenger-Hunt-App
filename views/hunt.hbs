@@ -21,22 +21,66 @@
             background:none !important;
         }
     </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
         var map;
         var currLocation;
+
+        function LocationControl(controlDiv, map) {
+            const controlUI = document.createElement("div");
+
+            controlUI.style.backgroundColor = "#fff";
+            controlUI.style.border = "2px solid #fff";
+            controlUI.style.borderRadius = "3px";
+            controlUI.style.boxShadow = "0 2px 6px rgba(0,0,0,.3)";
+            controlUI.style.cursor = "pointer";
+            controlUI.style.marginTop = "5px";
+            controlUI.style.marginBottom = "10px";
+            controlUI.style.textAlign = "center";
+            controlUI.title = "Click to get your location";
+            controlDiv.appendChild(controlUI);
+
+            const controlText = document.createElement("div");
+
+            controlText.style.color = "rgb(25,25,25)";
+            controlText.style.fontFamily = "Roboto,Arial,sans-serif";
+            controlText.style.fontSize = "8px";
+            controlText.style.lineHeight = "12px";
+            controlText.style.paddingLeft = "5px";
+            controlText.style.paddingRight = "5px";
+            controlText.innerHTML = "Get Current Location";
+            controlUI.appendChild(controlText);
+            controlUI.addEventListener("click", () => {
+                getLocation();
+            });   
+        }
+
         function initMap() {
             map = new google.maps.Map(document.getElementById("map"), {
                 center: { lat: 47.605692, lng: -121.982297 },
-                zoom: 14.75,
+                zoom: 14.8,
                 disableDefaultUI: true
             });
-            
             getLocation();
+
+            const locationControlDiv = document.createElement("div");
+            LocationControl(locationControlDiv, map);
+            map.controls[google.maps.ControlPosition.TOP_CENTER].push(locationControlDiv);
         }
+
+        function navError(err) {
+            console.warn(`ERROR(${err.code}): ${err.message}`);
+        }
+
+        var options = {
+            enableHighAccuracy: true,
+            timeout: 5000,
+            maximumAge: 0
+        };
         
         function getLocation() {
             if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(drawCurrLocation);
+                navigator.geolocation.getCurrentPosition(drawCurrLocation, navError, options);
             } else { 
                 alert("Geolocation is not supported by this browser.");
             }
@@ -52,10 +96,10 @@
             }
             console.log(location);
             currLocation = new google.maps.Circle({
-                strokeColor: "#DA70D6",
+                strokeColor: "#0000FF",
                 strokeOpacity: 1,
                 strokeWeight: 2,
-                fillColor: "#DA70D6",
+                fillColor: "#0000FF",
                 fillOpacity: 1,
                 map,
                 center: location,
@@ -63,17 +107,42 @@
             });
             console.log(currLocation)
         }
+
+        function refresh() {
+            $.ajax({
+                url: '/api/teaminfo',
+                type: 'GET', 
+                data: { 
+                    teamId: '{{teamId}}'
+                },
+                success: function(response) {
+                    console.log(response);
+                    document.getElementById("teamNameText").innerHTML = response['teamName'];
+                    document.getElementById("teamMembersText").innerHTML = response['teamMembers'];
+                    document.getElementById("currClueText").innerHTML = "Clue " + response['currClue']['clue'] + ":";
+                    document.getElementById("cluesUncoveredText").innerHTML = "Clues uncovered: " + response['uncoveredClues']['clues'].join(', ');
+                    map.setCenter(response['currClue']['position']);
+                },
+                error: function(e) {
+                    alert('Error :( try again');
+                }
+            });
+        }
+
+        refresh();
+        
     </script>
   <body>
     <h3 id=teamNameText>Team</h3>
-    <h5 id=teamMembersText>Team Members</h5>
+    <h5 id=teamMembersText style="color:gray;">Team Members</h5>
+    <p style="margin-bottom:0.5cm;"></p>
     <div id="map"></div>
     <p style="margin-bottom:0.5cm;"></p>
     <h6 id=currClueText>Clue X:</h6>
     <input type="text" id="answerText" name="teamId"> 
     <input type="button" id="enterButton" value="Submit" class="button">
     <p style="margin-bottom:0.5cm;"></p>
-    <p id=cluesCollectedText>Clues collected: A, B, C</p>
+    <p id=cluesUncoveredText>Clues uncovered:</p>
     <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
     <script
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCbtbKtNrXH2I5SfFq2lQtqfJxxed4Ume0&callback=initMap&v=weekly&channel=2"

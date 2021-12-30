@@ -27,26 +27,52 @@ app.use(express.static(`${__dirname}/public`));
 // constants
 const teamMembers = {
     '6VVA':'Akash, Narasimham, Akhila',
-    'M3ZV':'Anika, Shanti, Vihaa,',
+    'M3ZV':'Anika, Shanti, Vihaan',
     'VOK1':'Venkat, Nithika, Saahas',
     'LYRB':'Sunila, Aneesh, Rishik',
     'TEST':'player1, player2, player3'
 }
-/*const clueCoords = {
-    'M1':
-    'A1':
-    'N':
-    'A2':
-    'K':
-    'U1':
-    'T':
-    'U2':
-    'M2':
-    'B':
-    'A':
-    'M':
 
-}*/
+const clueLists = {
+    '6VVA': ['N', 'M2', 'U2', 'A2', 'M1', 'K', 'A1', 'U1', 'B', 'T', 'Final'],
+    'M3ZV': ['M2', 'B', 'A1', 'N', 'K', 'T', 'M1', 'A2', 'U2', 'U1', 'Final'],
+    'VOK1': ['A1', 'N', 'K', 'T', 'B', 'M1', 'M2', 'U1', 'A2', 'U2', 'Final'],
+    'LYRB': ['N', 'M1', 'A1', 'U2', 'U1', 'K', 'B', 'A2', 'T', 'M2', 'Final'],
+    'TEST': ['M1', 'A1', 'N', 'A2', 'K', 'U1', 'T', 'U2', 'M2', 'B', 'Final']
+} 
+
+const clueCoords = {
+    'M1': {lat: 47.601070, lng: -121.982860},
+    'A1': {lat: 47.601974, lng: -121.984035},
+    'N': {lat: 47.602115, lng: -121.979769},
+    'A2': {lat: 47.602172, lng: -121.974589},
+    'K': {lat: 47.604382, lng: -121.979455},
+    'U1': {lat: 47.606784, lng: -121.978530},
+    'T': {lat: 47.606863, lng: -121.984196},
+    'U2': {lat: 47.607998, lng: -121.986330},
+    'M2': {lat: 47.605675, lng: -121.989390},
+    'B': {lat: 47.604122, lng: -121.983624},
+    'Final': {lat: 47.5966, lng: -122.0404}
+}
+
+// helper functions
+function getUncoveredClues(teamId, currClueIdx) {
+    var uncoveredClues = clueLists[teamId].slice(0, currClueIdx);
+    var uncoveredPositions = []
+    uncoveredClues.forEach(clue => uncoveredPositions.push(clueCoords[clue]));
+    return {
+        clues: uncoveredClues,
+        positions: uncoveredPositions
+    };
+}
+
+function getCurrClue(teamId, currClue) {
+    var clue = clueLists[teamId][currClue];
+    return {
+        clue: clue,
+        position: clueCoords[clue]
+    };
+}
 
 // route for welcome page
 app.get('/', (req, res) => {
@@ -98,7 +124,13 @@ app.get('/api/teaminfo', (req, res) => {
     var teamId = req.query.teamId;
     try {
         pool.query(`select * from curr_pos where team_id = '${teamId}'`, function(error, result, fields) {
-            res.send(result.rows[0]);
+            data = {
+                teamName: result.rows[0]['team_name'],
+                teamMembers: teamMembers[teamId],
+                uncoveredClues: getUncoveredClues(teamId, result.rows[0]['curr_clue']),
+                currClue: getCurrClue(teamId, result.rows[0]['curr_clue'])
+            }
+            res.send(data);
         });
     } catch (error) {
         res.send('error');
@@ -111,24 +143,6 @@ function nameTeam(teamId, teamName) {
     return new Promise(resolve => {
         try {
             pool.query(`UPDATE curr_pos SET team_name='${teamName}' WHERE team_id='${teamId}'`);
-        } catch (error) {
-            throw new Error("Couldn't add to db");
-        }
-    });
-}
-
-function renderHunt(teamId) {
-    return new Promise(resolve => {
-        try {
-            pool.query(`SELECT * FROM curr_pos WHERE team_id = '${teamId}'`, function(error, result, fields) {
-                teamName = result.rows[0]['team_name'];
-                currClue = result.rows[0]['curr_clue'];
-                console.log(teamId);
-                console.log(teamName);
-                console.log(currClue);
-                console.log(teamMembers[teamId]);
-                res.render('hunt');
-            });
         } catch (error) {
             throw new Error("Couldn't add to db");
         }
