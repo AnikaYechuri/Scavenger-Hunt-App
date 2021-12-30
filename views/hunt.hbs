@@ -25,6 +25,7 @@
     <script>
         var map;
         var currLocation;
+        var currClue;
 
         function LocationControl(controlDiv, map) {
             const controlUI = document.createElement("div");
@@ -108,6 +109,35 @@
             console.log(currLocation)
         }
 
+        function submitAnswer() {
+            var answer = document.getElementById('answerText').value;
+            $.ajax({
+                url: '/api/checkanswer',
+                type: 'GET', 
+                data: { 
+                    teamId: '{{teamId}}',
+                    clue: currClue,
+                    answer: answer
+                },
+                success: function(response) {
+                    console.log(response);
+                    if (response == 'stale') {
+                        alert("Your team has moved on to another clue. Refresh the page.");
+                    } else if (response == 'correct') {
+                        alert("That's the correct answer! Good job!");
+                        refresh();
+                    } else if (response == 'incorrect') {
+                        alert("That's incorrect! Try again!");
+                    } else {
+                        alert("Something went wrong! Try refreshing");
+                    }
+                },
+                error: function(e) {
+                    alert('Error :( try again');
+                }
+            });
+        }
+
         function refresh() {
             $.ajax({
                 url: '/api/teaminfo',
@@ -117,9 +147,10 @@
                 },
                 success: function(response) {
                     console.log(response);
+                    currClue = response['currClue']['clue'];
                     document.getElementById("teamNameText").innerHTML = response['teamName'];
                     document.getElementById("teamMembersText").innerHTML = response['teamMembers'];
-                    document.getElementById("currClueText").innerHTML = "Clue " + response['currClue']['clue'] + ":";
+                    document.getElementById("currClueText").innerHTML = "Clue " + currClue + ":";
                     document.getElementById("cluesUncoveredText").innerHTML = "Clues uncovered: " + response['uncoveredClues']['clues'].join(', ');
                     map.setCenter(response['currClue']['position']);
                 },
@@ -130,7 +161,6 @@
         }
 
         refresh();
-        
     </script>
   <body>
     <h3 id=teamNameText>Team</h3>
@@ -140,9 +170,40 @@
     <p style="margin-bottom:0.5cm;"></p>
     <h6 id=currClueText>Clue X:</h6>
     <input type="text" id="answerText" name="teamId"> 
-    <input type="button" id="enterButton" value="Submit" class="button">
+    <input type="button" id="submitButton" value="Submit" class="button">
     <p style="margin-bottom:0.5cm;"></p>
     <p id=cluesUncoveredText>Clues uncovered:</p>
+    <script>
+        $("#submitButton").on('click', function(e) {
+            console.log('click');
+            var answer = document.getElementById('answerText').value;
+            $.ajax({
+                url: '/api/checkanswer',
+                type: 'GET', 
+                data: { 
+                    teamId: '{{teamId}}',
+                    clue: currClue,
+                    answer: answer
+                },
+                success: function(response) {
+                    console.log(response);
+                    if (response == 'stale') {
+                        alert("Your team has moved on to another clue. Refresh the page.");
+                    } else if (response == 'correct') {
+                        alert("That's the correct answer! Good job!");
+                        refresh();
+                    } else if (response == 'incorrect') {
+                        alert("That's incorrect! Try again!");
+                    } else {
+                        alert("Something went wrong! Try refreshing");
+                    }
+                },
+                error: function(e) {
+                    alert('Error :( try again');
+                }
+            });
+        });
+    </script>
     <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
     <script
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCbtbKtNrXH2I5SfFq2lQtqfJxxed4Ume0&callback=initMap&v=weekly&channel=2"

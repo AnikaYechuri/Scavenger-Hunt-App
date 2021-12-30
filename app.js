@@ -55,6 +55,20 @@ const clueCoords = {
     'Final': {lat: 47.5966, lng: -122.0404}
 }
 
+const clueAnswers = {
+    'M1': new Set(['answer1']),
+    'A1': new Set(['answer1']),
+    'N': new Set(['answer1']),
+    'A2': new Set(['answer1']),
+    'K': new Set(['answer1']),
+    'U1': new Set(['answer1']),
+    'T': new Set(['answer1']),
+    'U2': new Set(['answer1']),
+    'M2': new Set(['answer1']),
+    'B': new Set(['answer1']),
+    'Final': new Set(['mana kutumbam'])
+}
+
 // helper functions
 function getUncoveredClues(teamId, currClueIdx) {
     var uncoveredClues = clueLists[teamId].slice(0, currClueIdx);
@@ -72,6 +86,26 @@ function getCurrClue(teamId, currClue) {
         clue: clue,
         position: clueCoords[clue]
     };
+}
+
+function updateClue(teamId, event) {
+    return new Promise(resolve => {
+        try {
+            pool.query(`update curr_pos set curr_clue=curr_clue+1 where team_id='${teamId}'`);
+        } catch (error) {
+            throw new Error("Couldn't update");
+        }
+    });
+}
+
+function nameTeam(teamId, teamName) {
+    return new Promise(resolve => {
+        try {
+            pool.query(`UPDATE curr_pos SET team_name='${teamName}' WHERE team_id='${teamId}'`);
+        } catch (error) {
+            throw new Error("Couldn't add to db");
+        }
+    });
 }
 
 // route for welcome page
@@ -137,17 +171,29 @@ app.get('/api/teaminfo', (req, res) => {
     }
 });
 
-
-
-function nameTeam(teamId, teamName) {
-    return new Promise(resolve => {
-        try {
-            pool.query(`UPDATE curr_pos SET team_name='${teamName}' WHERE team_id='${teamId}'`);
-        } catch (error) {
-            throw new Error("Couldn't add to db");
-        }
-    });
-}
+// API endpoint to check answer and update clue if correct
+app.get('/api/checkanswer', (req, res) => {
+    var teamId = req.query.teamId;
+    var clue = req.query.clue;
+    var answer = req.query.answer;
+    try {
+        pool.query(`select * from curr_pos where team_id = '${teamId}'`, function(error, result, fields) {
+            if (clue != getCurrClue(teamId, result.rows[0]['curr_clue'])['clue']) {
+                console.log(clue);
+                console.log(result.rows[0]['curr_clue']);
+                res.send('stale');
+            } else if (clueAnswers[clue].has(answer.toLowerCase())) {
+                // answer correct!
+                updateClue(teamId)
+                .then(res.send('correct'));
+            } else {
+                res.send('incorrect');
+            }
+        });
+    } catch (error) {
+        res.send('error');
+    }
+});
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => {
