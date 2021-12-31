@@ -26,18 +26,18 @@ app.use(express.static(`${__dirname}/public`));
 
 // constants
 const teamMembers = {
-    '6VVA':'Akash, Narasimham, Akhila',
-    'M3ZV':'Anika, Shanti, Vihaan',
-    'VOK1':'Venkat, Nithika, Saahas',
-    'LYRB':'Sunila, Aneesh, Rishik',
+    '0TSQ':'Akash, Narasimham, Akhila',
+    'PCZ1':'Anika, Shanti, Vihaan',
+    'WB4N':'Venkat, Nithika, Saahas',
+    'SBY9':'Sunila, Aneesh, Rishik',
     'TEST':'player1, player2, player3'
 };
 
 const clueLists = {
-    '6VVA': ['O', 'N2', 'V2', 'B2', 'N1', 'L', 'B1', 'V1', 'C', 'U', 'Final'],
-    'M3ZV': ['N2', 'C', 'B1', 'O', 'L', 'U', 'N1', 'B2', 'V2', 'V1', 'Final'],
-    'VOK1': ['B1', 'O', 'L', 'U', 'C', 'N1', 'N2', 'V1', 'B2', 'V2', 'Final'],
-    'LYRB': ['O', 'N1', 'B1', 'V2', 'V1', 'L', 'C', 'B2', 'U', 'N2', 'Final'],
+    '0TSQ': ['O', 'N2', 'V2', 'B2', 'N1', 'L', 'B1', 'V1', 'C', 'U', 'Final'],
+    'PCZ1': ['N2', 'C', 'B1', 'O', 'L', 'U', 'N1', 'B2', 'V2', 'V1', 'Final'],
+    'WB4N': ['B1', 'O', 'L', 'U', 'C', 'N1', 'N2', 'V1', 'B2', 'V2', 'Final'],
+    'SBY9': ['O', 'N1', 'B1', 'V2', 'V1', 'L', 'C', 'B2', 'U', 'N2', 'Final'],
     'TEST': ['N1', 'B1', 'O', 'B2', 'L', 'V1', 'U', 'V2', 'N2', 'C', 'Final']
 };
 
@@ -52,10 +52,10 @@ const clueCoords = {
     'V2': {lat: 47.607998, lng: -121.986330},
     'N2': {lat: 47.605675, lng: -121.989390},
     'C': {lat: 47.604122, lng: -121.983624},
-    'Final': {lat: 47.5966, lng: -122.0404}
+    'Final': {lat: 47.601070, lng: -121.982860}
 };
 
-const clueAnswers = {
+/*const clueAnswers = {
     'N1': new Set(['blind pig']),
     'B1': new Set(['vihaan']),
     'O': new Set(['x']),
@@ -67,6 +67,19 @@ const clueAnswers = {
     'N2': new Set(['c']),
     'C': new Set(['language']),
     'Final': new Set(['mana kutumbam'])
+};*/
+const clueAnswers = {
+    'N1': new Set(['answer']),
+    'B1': new Set(['answer']),
+    'O': new Set(['answer']),
+    'B2': new Set(['answer']),
+    'L': new Set(['answer']),
+    'V1': new Set(['answer']),
+    'U': new Set(['answer']),
+    'V2': new Set(['answer']),
+    'N2': new Set(['answer']),
+    'C': new Set(['answer']),
+    'Final': new Set(['answer'])
 };
 
 // helper functions
@@ -74,6 +87,10 @@ function getUncoveredClues(teamId, currClueIdx) {
     var uncoveredClues = clueLists[teamId].slice(0, currClueIdx);
     var uncoveredPositions = []
     uncoveredClues.forEach(clue => uncoveredPositions.push(clueCoords[clue]));
+    if (currClueIdx == 10) {
+        uncoveredClues.push('B3');
+        uncoveredClues.push('N3');
+    }
     return {
         clues: uncoveredClues,
         positions: uncoveredPositions
@@ -101,7 +118,9 @@ function updateClue(teamId, event) {
 function nameTeam(teamId, teamName) {
     return new Promise(resolve => {
         try {
-            pool.query(`UPDATE curr_pos SET team_name='${teamName}' WHERE team_id='${teamId}'`);
+            pool.query(`update curr_pos set team_name='${teamName}' where team_id='${teamId}'`, function(error, result, fields) {
+              console.log(`'${teamName}'`);
+            });
         } catch (error) {
             throw new Error("Couldn't add to db");
         }
@@ -118,6 +137,7 @@ app.post('/hunt', (req, res) => {
     var teamId = req.body.teamId;
     var teamName = req.body.teamName;
     if (teamName != '') {
+        console.log(req.body);
         nameTeam(teamId, teamName)
         .then(res.render('hunt', {
             teamId: teamId
@@ -195,7 +215,7 @@ app.get('/api/checkanswer', (req, res) => {
     }
 });
 
-const port = process.env.PORT || 6000;
+const port = process.env.PORT || 4000;
 app.listen(port, () => {
     console.log(`Server started on port ${port}`);
 });

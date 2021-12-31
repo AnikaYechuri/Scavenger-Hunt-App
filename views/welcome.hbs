@@ -3,7 +3,7 @@
  <p style="margin-bottom:0.5cm;">
  <form id="teamform" action="/hunt" method="POST">
     <p>Enter your team ID:</p>
-    <input type="text" id="teamId" name="teamId" onkeyup="this.value = this.value.toUpperCase()" maxlength="4"> 
+    <input type="text" id="teamId" name="teamId" onkeyup="this.value = this.value.toUpperCase()" maxlength="4">
     <input type="button" id="enterButton" value="Enter" class="button">
     <p style="margin-bottom:1cm;">
     <p id="nameText" style="visibility: hidden">Name your team:</p>
@@ -22,8 +22,8 @@
         } else {
             $.ajax({
                 url: '/api/validateteamid',
-                type: 'GET', 
-                data: { 
+                type: 'GET',
+                data: {
                     teamId: teamId
                 },
                 success: function(response) {
@@ -51,6 +51,7 @@
         if (teamName == '') {
             alert('Please name your team');
         } else {
+            document.getElementById("teamName").value = document.getElementById("teamName").value.replace(`'`, '');
             $("#teamform").submit();
         }
     });

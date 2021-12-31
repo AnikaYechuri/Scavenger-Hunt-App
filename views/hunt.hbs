@@ -122,7 +122,8 @@
                 var prevPin = new google.maps.Marker({
                     position: prev['positions'][i],
                     title: prev['clues'][i],
-                    icon: 'green_Marker' + pclue.charAt(0); + '.png'
+                    map,
+                    icon: '/img/green_Marker' + pclue.charAt(0) + '.png'
                 });
                 prevPins.push(prevPin);
             }
@@ -131,8 +132,10 @@
             currPin = new google.maps.Marker({
                 position: cpos,
                 title: cclue,
-                icon: '/img/green_Marker' + cclue.charAt(0); + '.png'
+                map,
+                icon: '/img/red_Marker' + cclue.charAt(0) + '.png'
             });
+            console.log(currPin);
             map.setCenter(cpos);
         }
 
@@ -151,7 +154,7 @@
                     document.getElementById("teamNameText").innerHTML = response['teamName'];
                     document.getElementById("teamMembersText").innerHTML = response['teamMembers'];
                     document.getElementById("currClueText").innerHTML = "Clue " + currClue + ":";
-                    document.getElementById("cluesUncoveredText").innerHTML = "Clues uncovered: " + uncovered['clues'].join(', ')
+                    document.getElementById("cluesUncoveredText").innerHTML = "Clues uncovered: " + uncovered['clues'].join(', ');
                     dropCluePins(curr, uncovered);
                 },
                 error: function(e) {
