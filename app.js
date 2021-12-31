@@ -31,43 +31,43 @@ const teamMembers = {
     'VOK1':'Venkat, Nithika, Saahas',
     'LYRB':'Sunila, Aneesh, Rishik',
     'TEST':'player1, player2, player3'
-}
+};
 
 const clueLists = {
-    '6VVA': ['N', 'M2', 'U2', 'A2', 'M1', 'K', 'A1', 'U1', 'B', 'T', 'Final'],
-    'M3ZV': ['M2', 'B', 'A1', 'N', 'K', 'T', 'M1', 'A2', 'U2', 'U1', 'Final'],
-    'VOK1': ['A1', 'N', 'K', 'T', 'B', 'M1', 'M2', 'U1', 'A2', 'U2', 'Final'],
-    'LYRB': ['N', 'M1', 'A1', 'U2', 'U1', 'K', 'B', 'A2', 'T', 'M2', 'Final'],
-    'TEST': ['M1', 'A1', 'N', 'A2', 'K', 'U1', 'T', 'U2', 'M2', 'B', 'Final']
-} 
+    '6VVA': ['O', 'N2', 'V2', 'B2', 'N1', 'L', 'B1', 'V1', 'C', 'U', 'Final'],
+    'M3ZV': ['N2', 'C', 'B1', 'O', 'L', 'U', 'N1', 'B2', 'V2', 'V1', 'Final'],
+    'VOK1': ['B1', 'O', 'L', 'U', 'C', 'N1', 'N2', 'V1', 'B2', 'V2', 'Final'],
+    'LYRB': ['O', 'N1', 'B1', 'V2', 'V1', 'L', 'C', 'B2', 'U', 'N2', 'Final'],
+    'TEST': ['N1', 'B1', 'O', 'B2', 'L', 'V1', 'U', 'V2', 'N2', 'C', 'Final']
+};
 
 const clueCoords = {
-    'M1': {lat: 47.601070, lng: -121.982860},
-    'A1': {lat: 47.601974, lng: -121.984035},
-    'N': {lat: 47.602115, lng: -121.979769},
-    'A2': {lat: 47.602172, lng: -121.974589},
-    'K': {lat: 47.604382, lng: -121.979455},
-    'U1': {lat: 47.606784, lng: -121.978530},
-    'T': {lat: 47.606863, lng: -121.984196},
-    'U2': {lat: 47.607998, lng: -121.986330},
-    'M2': {lat: 47.605675, lng: -121.989390},
-    'B': {lat: 47.604122, lng: -121.983624},
+    'N1': {lat: 47.601070, lng: -121.982860},
+    'B1': {lat: 47.601974, lng: -121.984035},
+    'O': {lat: 47.602115, lng: -121.979769},
+    'B2': {lat: 47.602172, lng: -121.974589},
+    'L': {lat: 47.604382, lng: -121.979455},
+    'V1': {lat: 47.606784, lng: -121.978530},
+    'U': {lat: 47.606863, lng: -121.984196},
+    'V2': {lat: 47.607998, lng: -121.986330},
+    'N2': {lat: 47.605675, lng: -121.989390},
+    'C': {lat: 47.604122, lng: -121.983624},
     'Final': {lat: 47.5966, lng: -122.0404}
-}
+};
 
 const clueAnswers = {
-    'M1': new Set(['answer1']),
-    'A1': new Set(['answer1']),
-    'N': new Set(['answer1']),
-    'A2': new Set(['answer1']),
-    'K': new Set(['answer1']),
-    'U1': new Set(['answer1']),
-    'T': new Set(['answer1']),
-    'U2': new Set(['answer1']),
-    'M2': new Set(['answer1']),
-    'B': new Set(['answer1']),
+    'N1': new Set(['blind pig']),
+    'B1': new Set(['vihaan']),
+    'O': new Set(['x']),
+    'B2': new Set(['(2,12),(5,11)','(5,11),(2,12)']),
+    'L': new Set(['40']),
+    'V1': new Set(['start afresh']),
+    'U': new Set(['go huskies!']),
+    'V2': new Set(['8']),
+    'N2': new Set(['c']),
+    'C': new Set(['language']),
     'Final': new Set(['mana kutumbam'])
-}
+};
 
 // helper functions
 function getUncoveredClues(teamId, currClueIdx) {
@@ -195,7 +195,7 @@ app.get('/api/checkanswer', (req, res) => {
     }
 });
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 6000;
 app.listen(port, () => {
     console.log(`Server started on port ${port}`);
 });

@@ -2,7 +2,7 @@
 <html>
     <style>
         #map {
-            height: 50%;
+            height: 60%;
         }
         html, body {
             height: 100%;
@@ -11,7 +11,7 @@
         a[href^="http://maps.google.com/maps"] {
             display:none !important
         }
-        a[href^="https://maps.google.com/maps"] { 
+        a[href^="https://maps.google.com/maps"] {
             display:none !important
         }
         .gmnoprint a, .gmnoprint span, .gm-style-cc {
@@ -26,6 +26,9 @@
         var map;
         var currLocation;
         var currClue;
+
+        var currPin;
+        var prevPins = [];
 
         function LocationControl(controlDiv, map) {
             const controlUI = document.createElement("div");
@@ -53,7 +56,7 @@
             controlUI.appendChild(controlText);
             controlUI.addEventListener("click", () => {
                 getLocation();
-            });   
+            });
         }
 
         function initMap() {
@@ -78,11 +81,11 @@
             timeout: 5000,
             maximumAge: 0
         };
-        
+
         function getLocation() {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(drawCurrLocation, navError, options);
-            } else { 
+            } else {
                 alert("Geolocation is not supported by this browser.");
             }
         }
@@ -109,50 +112,47 @@
             console.log(currLocation)
         }
 
-        function submitAnswer() {
-            var answer = document.getElementById('answerText').value;
-            $.ajax({
-                url: '/api/checkanswer',
-                type: 'GET', 
-                data: { 
-                    teamId: '{{teamId}}',
-                    clue: currClue,
-                    answer: answer
-                },
-                success: function(response) {
-                    console.log(response);
-                    if (response == 'stale') {
-                        alert("Your team has moved on to another clue. Refresh the page.");
-                    } else if (response == 'correct') {
-                        alert("That's the correct answer! Good job!");
-                        refresh();
-                    } else if (response == 'incorrect') {
-                        alert("That's incorrect! Try again!");
-                    } else {
-                        alert("Something went wrong! Try refreshing");
-                    }
-                },
-                error: function(e) {
-                    alert('Error :( try again');
-                }
+        function dropCluePins(curr, prev) {
+            if (typeof currPin !== 'undefined') {
+                currPin.setMap(null);
+            }
+            prevPins.forEach(pin => pin.setMap(null));
+            for(let i = 0; i < prev['positions'].length; i++) {
+                var pclue = prev['clues'][i];
+                var prevPin = new google.maps.Marker({
+                    position: prev['positions'][i],
+                    title: prev['clues'][i],
+                    icon: 'green_Marker' + pclue.charAt(0); + '.png'
+                });
+                prevPins.push(prevPin);
+            }
+            var cclue = curr['clue'];
+            var cpos = curr['position'];
+            currPin = new google.maps.Marker({
+                position: cpos,
+                title: cclue,
+                icon: '/img/green_Marker' + cclue.charAt(0); + '.png'
             });
+            map.setCenter(cpos);
         }
 
         function refresh() {
             $.ajax({
                 url: '/api/teaminfo',
-                type: 'GET', 
-                data: { 
+                type: 'GET',
+                data: {
                     teamId: '{{teamId}}'
                 },
                 success: function(response) {
                     console.log(response);
-                    currClue = response['currClue']['clue'];
+                    var curr = response['currClue'];
+                    var uncovered = response['uncoveredClues'];
+                    currClue = curr['clue'];
                     document.getElementById("teamNameText").innerHTML = response['teamName'];
                     document.getElementById("teamMembersText").innerHTML = response['teamMembers'];
                     document.getElementById("currClueText").innerHTML = "Clue " + currClue + ":";
-                    document.getElementById("cluesUncoveredText").innerHTML = "Clues uncovered: " + response['uncoveredClues']['clues'].join(', ');
-                    map.setCenter(response['currClue']['position']);
+                    document.getElementById("cluesUncoveredText").innerHTML = "Clues uncovered: " + uncovered['clues'].join(', ')
+                    dropCluePins(curr, uncovered);
                 },
                 error: function(e) {
                     alert('Error :( try again');
@@ -169,7 +169,7 @@
     <div id="map"></div>
     <p style="margin-bottom:0.5cm;"></p>
     <h6 id=currClueText>Clue X:</h6>
-    <input type="text" id="answerText" name="teamId"> 
+    <input type="text" id="answerText" name="teamId">
     <input type="button" id="submitButton" value="Submit" class="button">
     <p style="margin-bottom:0.5cm;"></p>
     <p id=cluesUncoveredText>Clues uncovered:</p>
@@ -179,8 +179,8 @@
             var answer = document.getElementById('answerText').value;
             $.ajax({
                 url: '/api/checkanswer',
-                type: 'GET', 
-                data: { 
+                type: 'GET',
+                data: {
                     teamId: '{{teamId}}',
                     clue: currClue,
                     answer: answer
@@ -191,6 +191,8 @@
                         alert("Your team has moved on to another clue. Refresh the page.");
                     } else if (response == 'correct') {
                         alert("That's the correct answer! Good job!");
+                        if (currClue == 'Final')
+                            alert("Congratulations! You won the game!");
                         refresh();
                     } else if (response == 'incorrect') {
                         alert("That's incorrect! Try again!");
