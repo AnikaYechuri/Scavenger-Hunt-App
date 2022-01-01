@@ -26,8 +26,8 @@ app.use(express.static(`${__dirname}/public`));
 
 // constants
 const teamMembers = {
-    '0TSQ':'Akash, Venkat Y, Akhila',
-    'PCZ1':'Anika, Shanti, Rishik, Yajulu',
+    '0TSQ':'Akash, Venkat Y, Akhila, Shanti',
+    'PCZ1':'Anika, Venkat B, Rishik, Yajulu',
     'WB4N':'Narasimham, Nithika, Saahas, Pooja',
     'SBY9':'Sunila, Aneesh, Vihaan, Priya',
     'TEST':'player1, player2, player3'
