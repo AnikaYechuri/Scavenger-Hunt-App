@@ -26,36 +26,36 @@ app.use(express.static(`${__dirname}/public`));
 
 // constants
 const teamMembers = {
-    '0TSQ':'Akash, Narasimham, Akhila',
-    'PCZ1':'Anika, Shanti, Vihaan',
-    'WB4N':'Venkat, Nithika, Saahas',
-    'SBY9':'Sunila, Aneesh, Rishik',
+    '0TSQ':'Akash, Venkat Y, Akhila',
+    'PCZ1':'Anika, Shanti, Rishik, Yajulu',
+    'WB4N':'Narasimham, Nithika, Saahas, Pooja',
+    'SBY9':'Sunila, Aneesh, Vihaan, Priya',
     'TEST':'player1, player2, player3'
 };
 
 const clueLists = {
-    '0TSQ': ['O', 'N2', 'V2', 'B2', 'N1', 'L', 'B1', 'V1', 'C', 'U', 'Final'],
-    'PCZ1': ['N2', 'C', 'B1', 'O', 'L', 'U', 'N1', 'B2', 'V2', 'V1', 'Final'],
-    'WB4N': ['B1', 'O', 'L', 'U', 'C', 'N1', 'N2', 'V1', 'B2', 'V2', 'Final'],
-    'SBY9': ['O', 'N1', 'B1', 'V2', 'V1', 'L', 'C', 'B2', 'U', 'N2', 'Final'],
-    'TEST': ['N1', 'B1', 'O', 'B2', 'L', 'V1', 'U', 'V2', 'N2', 'C', 'Final']
+    '0TSQ': ['N1','O','N2','V2','B1','B2','V1','C','L','U','Final'],
+    'PCZ1': ['N1','O','V2','B2','L','C','V1','B1','N2','U','Final'],
+    'WB4N': ['N1','U','L','B2','V1','C','B1','V2','N2','O','Final'],
+    'SBY9': ['N1','U','L','C','V1','N2','V2','B1','B2','O','Final'],
+    'TEST': ['N1','O','V2','B2','L','C','V1','B1','N2','U','Final']
 };
 
 const clueCoords = {
     'N1': {lat: 47.601070, lng: -121.982860},
-    'B1': {lat: 47.601974, lng: -121.984035},
-    'O': {lat: 47.602115, lng: -121.979769},
-    'B2': {lat: 47.602172, lng: -121.974589},
-    'L': {lat: 47.604382, lng: -121.979455},
-    'V1': {lat: 47.606784, lng: -121.978530},
-    'U': {lat: 47.606863, lng: -121.984196},
-    'V2': {lat: 47.607998, lng: -121.986330},
-    'N2': {lat: 47.605675, lng: -121.989390},
-    'C': {lat: 47.604122, lng: -121.983624},
+    'B1': {lat: 47.6071891, lng: -121.9888197}, //
+    'O': {lat: 47.602078, lng: -121.984613}, //
+    'B2': {lat: 47.605856, lng: -121.982989}, //
+    'L': {lat: 47.604455, lng: -121.979329}, //
+    'V1': {lat: 47.607660, lng: -121.983772}, //
+    'U': {lat: 47.602170, lng: -121.979844}, //
+    'V2': {lat: 47.604753, lng: -121.985901}, //
+    'N2': {lat: 47.603577, lng: -121.988551}, //
+    'C': {lat: 47.608702, lng: -121.980983}, //
     'Final': {lat: 47.601070, lng: -121.982860}
 };
 
-/*const clueAnswers = {
+const clueAnswers = {
     'N1': new Set(['blind pig']),
     'B1': new Set(['vihaan']),
     'O': new Set(['x']),
@@ -67,8 +67,9 @@ const clueCoords = {
     'N2': new Set(['c']),
     'C': new Set(['language']),
     'Final': new Set(['mana kutumbam'])
-};*/
-const clueAnswers = {
+};
+
+/*const clueAnswers = {
     'N1': new Set(['answer']),
     'B1': new Set(['answer']),
     'O': new Set(['answer']),
@@ -80,7 +81,7 @@ const clueAnswers = {
     'N2': new Set(['answer']),
     'C': new Set(['answer']),
     'Final': new Set(['answer'])
-};
+};*/
 
 // helper functions
 function getUncoveredClues(teamId, currClueIdx) {
