@@ -55,7 +55,7 @@ const clueCoords = {
     'Final': {lat: 47.601070, lng: -121.982860}
 };
 
-const clueAnswers = {
+/*const clueAnswers = {
     'N1': new Set(['blind pig']),
     'B1': new Set(['vihaan']),
     'O': new Set(['x']),
@@ -67,8 +67,8 @@ const clueAnswers = {
     'N2': new Set(['c']),
     'C': new Set(['language']),
     'Final': new Set(['mana kutumbam'])
-};
-/*const clueAnswers = {
+};*/
+const clueAnswers = {
     'N1': new Set(['answer']),
     'B1': new Set(['answer']),
     'O': new Set(['answer']),
@@ -80,7 +80,7 @@ const clueAnswers = {
     'N2': new Set(['answer']),
     'C': new Set(['answer']),
     'Final': new Set(['answer'])
-};*/
+};
 
 // helper functions
 function getUncoveredClues(teamId, currClueIdx) {
